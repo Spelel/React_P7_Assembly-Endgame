@@ -35,10 +35,14 @@ export default function Main () {
             )
         }
 
-        let CurrentWordArray = currentWord.split("").map((word, index) => <WordBox
-                                                                    w = {word}
-                                                                    key = {index}
-                                                                />)
+        let CurrentWordArray = currentWord.split("").map((word, index) => {
+            
+        return <WordBox
+            w = {guessedLetters.includes(word) ? word : ""}
+            // w = {word}
+            key = {index}
+            
+        />})
         
         // console.log(CurrentWordArray)
     
