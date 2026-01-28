@@ -6,6 +6,7 @@ import Languages from "./Languages.jsx"
 import WordBox from "./WordBox.jsx"
 import AplhabetKey from "./AplhabetKey.jsx"
 import NewGameButton from "./NewGameButton.jsx"
+import clsx from "clsx"
 
 export default function Main () {
 
@@ -23,7 +24,10 @@ export default function Main () {
         const [currentWord, setCurrentWord] = React.useState("react")
 
         const [guessedLetters, setGuessedLetters] = React.useState([])
-        console.log(guessedLetters)
+
+        const currentWordLetters = currentWord.toLowerCase().split('')
+        
+        // console.log(guessedLetters)
 
         function addGuessedLetter(letter) {
             setGuessedLetters(prevLetters => 
@@ -38,13 +42,24 @@ export default function Main () {
         
         // console.log(CurrentWordArray)
     
+        function getLetterStatus(letter) {
+            if (!guessedLetters.includes(letter)) {
+                return 'unguessed' // nie została jeszcze kliknięta
+            }
+            return currentWordLetters.includes(letter) ? 'right' : 'wrong'
+        }
+        
 
-        const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('').map(akl => <AplhabetKey 
-                                                                            akl = {akl}
-                                                                            // akl - alphabet key layouts
-                                                                            holdW = {() => addGuessedLetter(akl)}
-                                                                            />)
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('').map(akl => {
+        const status = getLetterStatus(akl)
+            return <AplhabetKey 
+                akl = {akl}
+                // akl - alphabet key layouts
+                status = {status}
+                holdW = {() => addGuessedLetter(akl)}
+        />})
 
+        // console.log(alphabet)
 
     return<>
         <section className="flex flex-col justify-start items-center h-screen bg-[#1E1E1E] tracking-wider">
