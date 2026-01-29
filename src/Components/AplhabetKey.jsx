@@ -3,7 +3,7 @@ export default function AplhabetKey (props) {
     const { status, holdW, akl } = props
     return <>
         <button className={clsx(
-            'flex justify-center uppercase text-4xl border-white border-2 rounded-md m-1 p-5',
+            'flex justify-center uppercase text-4xl border-white border-2 rounded-md m-1 p-5 cursor-pointer ',
             {
                 'bg-[#FCBA29]': !status || status === 'unguessed',
                 'bg-[#4CAF50]': status === 'right',

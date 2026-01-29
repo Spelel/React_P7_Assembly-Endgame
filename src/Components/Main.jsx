@@ -10,22 +10,36 @@ import clsx from "clsx"
 
 export default function Main () {
 
-    // console.log(languages)
-
-    const langElements = languages.map(lan => <Languages
-                                                className = {`
-                                                    ${lan.bgColor} 
-                                                    ${lan.textColor} 
-                                                    px-2 py-1 rounded-md m-0.5 font-bold text-2xl
-                                                    `}
-                                                    name = {lan.name}
-        />)
-
         const [currentWord, setCurrentWord] = React.useState("react")
 
         const [guessedLetters, setGuessedLetters] = React.useState([])
 
         const currentWordLetters = currentWord.toLowerCase().split('')
+
+        const wrongGuessCount = guessedLetters.filter(letter => !currentWord.includes(letter)).length
+
+
+        const langElements = languages.map((lan, index) => {
+            const isLanguageLost = index < wrongGuessCount
+                return (
+            <Languages
+                className = {clsx(`
+                ${lan.bgColor} 
+                ${lan.textColor} 
+                px-2 py-1 rounded-md m-0.5 font-bold text-2xl relative
+                `)}
+                name = {lan.name}
+                status = {`${isLanguageLost ? 'wrong' : 'fine'}`}
+                />)})
+
+        const isGameWon = currentWord.split("").every(letter => guessedLetters.includes(letter))
+
+        const isGameLost = wrongGuessCount >= languages.length - 1
+
+        const isgameOver = isGameWon || isGameLost
+
+        const newGameBtn = isgameOver ? <NewGameButton /> : ""
+
         
         // console.log(guessedLetters)
 
@@ -81,7 +95,7 @@ export default function Main () {
             <div className="grid grid-cols-6 gap-1 mt-2">
                 {alphabet.slice(20)}
             </div>
-            <NewGameButton />
+                {newGameBtn}
         </section>
     </>
 }
