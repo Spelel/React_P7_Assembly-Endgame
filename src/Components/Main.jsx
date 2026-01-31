@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useOptimistic } from "react"
 import Header from "./Header.jsx"
 import Status from "./Status.jsx"
 import languages from '../Data/languages.js'
@@ -10,6 +10,26 @@ import clsx from "clsx"
 
 export default function Main () {
 
+    function getFarewellText(language) {
+        const options = [
+            `Farewell, ${language}`,
+            `Adios, ${language}`,
+            `R.I.P., ${language}`,
+            `We'll miss you, ${language}`,
+            `Oh no, not ${language}!`,
+            `${language} bites the dust`,
+            `Gone but not forgotten, ${language}`,
+            `The end of ${language} as we know it`,
+            `Off into the sunset, ${language}`,
+            `${language}, it's been real`,
+            `${language}, your watch has ended`,
+            `${language} has left the building`
+        ];
+    
+        const randomIndex = Math.floor(Math.random() * options.length);
+        return options[randomIndex];
+    }
+    
         const [currentWord, setCurrentWord] = React.useState("react")
 
         const [guessedLetters, setGuessedLetters] = React.useState([])
@@ -17,7 +37,6 @@ export default function Main () {
         const currentWordLetters = currentWord.toLowerCase().split('')
 
         const wrongGuessCount = guessedLetters.filter(letter => !currentWord.includes(letter)).length
-
 
         const langElements = languages.map((lan, index) => {
             const isLanguageLost = index < wrongGuessCount
@@ -32,14 +51,20 @@ export default function Main () {
                 status = {`${isLanguageLost ? 'wrong' : 'fine'}`}
                 />)})
 
+
+
+
         const isGameWon = currentWord.split("").every(letter => guessedLetters.includes(letter))
 
         const isGameLost = wrongGuessCount >= languages.length - 1
 
         const isgameOver = isGameWon || isGameLost
 
-        const newGameBtn = isgameOver ? <NewGameButton /> : ""
+        const lastGuessedLetter = guessedLetters[guessedLetters.length - 1]
 
+        const isLastGuessIncorrect = lastGuessedLetter && !currentWord.includes(lastGuessedLetter)
+
+        console.log(isLastGuessIncorrect)
         
         // console.log(guessedLetters)
 
@@ -57,8 +82,6 @@ export default function Main () {
             key = {index}
             
         />})
-        
-        // console.log(CurrentWordArray)
     
         function getLetterStatus(letter) {
             if (!guessedLetters.includes(letter)) {
@@ -66,7 +89,8 @@ export default function Main () {
             }
             return currentWordLetters.includes(letter) ? 'right' : 'wrong'
         }
-        
+
+
 
         const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('').map(akl => {
         const status = getLetterStatus(akl)
@@ -77,12 +101,25 @@ export default function Main () {
                 holdW = {() => addGuessedLetter(akl)}
         />})
 
-        // console.log(alphabet)
+        function renderGameInfo() {
+            if (!isgameOver && isLastGuessIncorrect) {
+                return <div className="
+                h-30 w-3/5 text-center mt-10 px-10 py-10 bg-[#7A5EA7] text-white text-3xl mb-15 border-1 rounded-md border-dashed border-black 
+                ">{getFarewellText(languages[wrongGuessCount - 1].name)}</div>
+            }
+            if (isGameWon) {
+                return <Status status = {true} />
+            }
+            if (isGameLost) {
+                return <Status status = {false} />
+            }
+            return <div className="h-30 w-3/5 mt-10 px-10 py-5 text-white text-center text-3xl mb-15"></div>
+        }
 
     return<>
         <section className="flex flex-col justify-start items-center h-screen bg-[#1E1E1E] tracking-wider">
            <Header />
-           <Status />
+           {renderGameInfo()}
            <div className="flex flex-wrap max-w-150 justify-center"> 
             {langElements}
            </div>
@@ -95,7 +132,7 @@ export default function Main () {
             <div className="grid grid-cols-6 gap-1 mt-2">
                 {alphabet.slice(20)}
             </div>
-                {newGameBtn}
+                {isgameOver && <NewGameButton />}
         </section>
     </>
 }
